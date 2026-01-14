@@ -44,6 +44,7 @@ pub enum Architecture {
     Sparc,
     Sparc64,
     Sparcv9,
+    Spirv,
     Wasm32,
     Wasm64,
     X86_64,
@@ -993,6 +994,7 @@ impl Architecture {
             | Powerpc64le
             | Riscv32(_)
             | Riscv64(_)
+            | Spirv
             | Wasm32
             | Wasm64
             | X86_64
@@ -1038,6 +1040,7 @@ impl Architecture {
             | X86_32(_)
             | Riscv32(_)
             | Sparc
+            | Spirv
             | Wasm32
             | M68k
             | Mips32(_)
@@ -1112,6 +1115,7 @@ impl Architecture {
             Sparc => Cow::Borrowed("sparc"),
             Sparc64 => Cow::Borrowed("sparc64"),
             Sparcv9 => Cow::Borrowed("sparcv9"),
+            Spirv => Cow::Borrowed("spirv"),
             Wasm32 => Cow::Borrowed("wasm32"),
             Wasm64 => Cow::Borrowed("wasm64"),
             X86_64 => Cow::Borrowed("x86_64"),
@@ -1144,7 +1148,7 @@ pub(crate) fn default_binary_format(triple: &Triple) -> BinaryFormat {
         | OperatingSystem::Wasi
         | OperatingSystem::Unknown => match triple.architecture {
             Architecture::Wasm32 | Architecture::Wasm64 => BinaryFormat::Wasm,
-            Architecture::Unknown => BinaryFormat::Unknown,
+            Architecture::Unknown | Architecture::Spirv => BinaryFormat::Unknown,
             // Default to ELF, following `getDefaultFormat` in LLVM.
             _ => BinaryFormat::Elf,
         },
@@ -1429,6 +1433,7 @@ impl FromStr for Architecture {
             "sparc" => Sparc,
             "sparc64" => Sparc64,
             "sparcv9" => Sparcv9,
+            "spirv" => Spirv,
             "wasm32" => Wasm32,
             "wasm64" => Wasm64,
             "x86_64" => X86_64,
